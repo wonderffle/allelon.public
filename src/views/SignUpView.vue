@@ -70,7 +70,7 @@
         this.household.head_attributes = this.person;
         this.organization.households_attributes = [this.household];
 
-        fetch('https://api.dev.allelon.io/organizations', {
+        fetch('https://api.local.allelon.io/organizations', {
           method: 'POST',
           headers: {
             "Content-Type": "application/json",
