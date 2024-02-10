@@ -85,7 +85,10 @@
         .then(data => {
           this.response = data;
           this.submitting = false;
-        });
+        }).catch(error => {
+          console.error(error);
+          this.submitting = false;
+        })
       }
     }
   }
