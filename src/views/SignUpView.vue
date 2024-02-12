@@ -70,7 +70,7 @@
         this.household.head_attributes = this.person;
         this.organization.households_attributes = [this.household];
 
-        fetch(`https://${process.env.VUE_APP_API_URI}/organizations`, {
+        fetch(`https://${import.meta.env.VITE_API_URI}/organizations`, {
           method: 'POST',
           headers: {
             "Content-Type": "application/json",
