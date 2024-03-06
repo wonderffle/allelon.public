@@ -29,3 +29,5 @@ coverage
 *.sw?
 
 *.tsbuildinfo
+
+certs/*key.pem
