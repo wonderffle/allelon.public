@@ -12,27 +12,20 @@
           city: '',
           region: '',
           postal_code: '',
-          phone_number: '',
-          subdomain: '',
-          households_attributes: [{}]
+          subdomain: ''
         },
         household: {
           street1: '',
           street2: '',
           city: '',
           region: '',
-          postal_code: '',
-          head_attributes: {}
+          postal_code: ''
         },
         person: {
           first_name: '',
           last_name: '',
-          preferred_first_name: '',
-          suffix: '',
-          gender: '',
           email: '',
-          email_confirmation: '',
-          mobile_phone_number: ''
+          email_confirmation: ''
         },
         response: {
           errors: {
@@ -44,23 +37,20 @@
               street2: [],
               city: [],
               region: [],
-              postal_code: [],
-              phone_number: []
+              postal_code: []
             },
             household: {
               street1: [],
               street2: [],
               city: [],
               region: [],
-              postal_code: [],
-              'head.first_name': [],
-              'head.last_name': [],
-              'head.preferred_first_name': [],
-              'head.suffix': [],
-              'head.gender': [],
-              'head.email': [],
-              'head.email_confirmation': [],
-              'head.mobile_phone_number': []
+              postal_code: []
+            },
+            person: {
+              first_name: [],
+              last_name: [],
+              email: [],
+              email_confirmation: []
             }
           }
         }
@@ -69,8 +59,6 @@
     methods: {
       async registerOrganization() {
         this.submitting = true;
-        this.household.head_attributes = this.person;
-        this.organization.households_attributes = [this.household];
 
         fetch(`https://${import.meta.env.VITE_API_URI}/organizations`, {
           method: 'POST',
@@ -78,7 +66,7 @@
             "Content-Type": "application/json",
             "Accept": "application/vnd.allelon.v1"
           },
-          body: JSON.stringify(this.organization)
+          body: JSON.stringify({ organization: this.organization, household: this.household, person: this.person })
         })
         .then(response => {
           this.success = response.status === 201
@@ -226,16 +214,6 @@
             </div>
 
             <div class="sm:col-span-4">
-              <label for="phone-number" class="block text-sm font-medium leading-6 text-gray-900">Phone number</label>
-              <div class="mt-2">
-                <input id="phone-number" v-model="organization.phone_number" name="organization[phone_number]" type="text" autocomplete="phone-number" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-              </div>
-              <div class="text-red-500 text-sm">
-                {{ response.errors.organization?.phone_number?.shift() }}
-              </div>
-            </div>
-
-            <div class="sm:col-span-4">
               <label for="website" class="block text-sm font-medium leading-6 text-gray-900">Website</label>
               <div class="mt-2">
                 <input id="website" v-model="organization.website" name="organization[website]" type="text" autocomplete="website" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
@@ -267,99 +245,47 @@
             <div class="sm:col-span-3">
               <label for="first-name" class="block text-sm font-medium leading-6 text-gray-900">First name</label>
               <div class="mt-2">
-                <input type="text" required v-model="person.first_name" name="organization[households_attributes][][head_attributes][first_name]" id="first-name" autocomplete="given-name" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                <input type="text" required v-model="person.first_name" name="person[first_name]" id="first-name" autocomplete="given-name" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
               </div>
               <div class="text-red-500 text-sm">
-                {{ response.errors.household && response.errors.household['head.first_name']?.shift() }}
+                {{ response.errors.household && response.errors.person?.first_name?.shift() }}
               </div>
             </div>
 
             <div class="sm:col-span-3">
               <label for="last-name" class="block text-sm font-medium leading-6 text-gray-900">Last name</label>
               <div class="mt-2">
-                <input type="text" required v-model="person.last_name" name="organization[households_attributes][][head_attributes][last_name]" id="last-name" autocomplete="family-name" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                <input type="text" required v-model="person.last_name" name="person[last_name]" id="last-name" autocomplete="family-name" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
               </div>
               <div class="text-red-500 text-sm">
-                {{ response.errors.household && response.errors.household['head.last_name']?.shift() }}
-              </div>
-            </div>
-
-            <div class="sm:col-span-3">
-              <label for="preferred-first-name" class="block text-sm font-medium leading-6 text-gray-900">Preferred first name</label>
-              <div class="mt-2">
-                <input type="text" v-model="person.preferred_first_name" name="organization[households_attributes][][head_attributes][preferred_first_name]" id="preferred-first-name" autocomplete="nick-name" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-              </div>
-              <div class="text-red-500 text-sm">
-                {{ response.errors.household && response.errors.household['head.preferred_first_name']?.shift() }}
-              </div>
-            </div>
-
-            <div class="sm:col-span-3">
-              <label for="suffix" class="block text-sm font-medium leading-6 text-gray-900">Suffix</label>
-              <div class="mt-2">
-                <select id="suffix" v-model="person.suffix" name="organization[households_attributes][][head_attributes][suffix]" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
-                  <option></option>
-                  <option>Jr.</option>
-                  <option>Sr.</option>
-                  <option>II</option>
-                  <option>III</option>
-                  <option>IV</option>
-                  <option>V</option>
-                </select>
-              </div>
-              <div class="text-red-500 text-sm">
-                {{ response.errors.household && response.errors.household['head.suffix']?.shift() }}
-              </div>
-            </div>
-
-            <div class="col-span-full">
-              <div class="flex items-center mb-4">
-                <input id="gender-male" type="radio" v-model="person.gender" value="male" name="organization[households_attributes][][head_attributes][gender]" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                <label for="gender-male" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Male</label>
-              </div>
-              <div class="flex items-center">
-                  <input id="gender-female" type="radio" v-model="person.gender" value="female" name="organization[households_attributes][][head_attributes][gender]" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                  <label for="gender-female" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Female</label>
-              </div>
-              <div class="text-red-500 text-sm">
-                {{ response.errors.household && response.errors.household['head.gender']?.shift() }}
+                {{ response.errors.household && response.errors.person?.last_name?.shift() }}
               </div>
             </div>
 
             <div class="sm:col-span-4">
               <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Email address</label>
               <div class="mt-2">
-                <input id="email" required v-model="person.email" name="organization[households_attributes][][head_attributes][email]" type="email" autocomplete="email" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                <input id="email" required v-model="person.email" name="person[email]" type="email" autocomplete="email" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
               </div>
               <div class="text-red-500 text-sm">
-                {{ response.errors.household && response.errors.household['head.email']?.shift() }}
+                {{ response.errors.household && response.errors.person?.email?.shift() }}
               </div>
             </div>
 
             <div class="sm:col-span-4">
               <label for="email_confirmation" class="block text-sm font-medium leading-6 text-gray-900">Confirm email address</label>
               <div class="mt-2">
-                <input id="email_confirmation" required v-model="person.email_confirmation" name="organization[households_attributes][][head_attributes][email_confirmation]" type="email" autocomplete="email" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                <input id="email_confirmation" required v-model="person.email_confirmation" name="person[email_confirmation]" type="email" autocomplete="email" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
               </div>
               <div class="text-red-500 text-sm">
-                {{ response.errors.household && response.errors.household['head.email_confirmation']?.shift() }}
-              </div>
-            </div>
-
-            <div class="sm:col-span-4">
-              <label for="mobile-phone-number" class="block text-sm font-medium leading-6 text-gray-900">Mobile phone number</label>
-              <div class="mt-2">
-                <input id="mobile-phone-number" v-model="person.mobile_phone_number" name="organization[households_attributes][][head_attributes][mobile_phone_number]" type="text" autocomplete="mobile-phone-number" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-              </div>
-              <div class="text-red-500 text-sm">
-                {{ response.errors.household && response.errors.household['head.mobile_phone_number']?.shift() }}
+                {{ response.errors.household && response.errors.person?.email_confirmation?.shift() }}
               </div>
             </div>
 
             <div class="col-span-full">
               <label for="household-street1" class="block text-sm font-medium leading-6 text-gray-900">Street address</label>
               <div class="mt-2">
-                <input type="text" required v-model="household.street1" name="organization[households_attributes][][street1]" id="household-street1" autocomplete="street1" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                <input type="text" required v-model="household.street1" name="household[street1]" id="household-street1" autocomplete="street1" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
               </div>
               <div class="text-red-500 text-sm">
                 {{ response.errors.household?.street1?.shift() }}
@@ -368,7 +294,7 @@
 
             <div class="col-span-full">
               <div class="mt-2">
-                <input type="text" v-model="household.street2" name="organization[households_attributes][][street2]" id="household-street2" autocomplete="street2" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                <input type="text" v-model="household.street2" name="household[street2]" id="household-street2" autocomplete="street2" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
               </div>
               <div class="text-red-500 text-sm">
                 {{ response.errors.household?.street2?.shift() }}
@@ -378,7 +304,7 @@
             <div class="sm:col-span-2 sm:col-start-1">
               <label for="household-city" class="block text-sm font-medium leading-6 text-gray-900">City</label>
               <div class="mt-2">
-                <input type="text" required v-model="household.city" name="organization[households_attributes][][city]" id="household-city" autocomplete="address-level2" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                <input type="text" required v-model="household.city" name="household[city]" id="household-city" autocomplete="address-level2" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
               </div>
               <div class="text-red-500 text-sm">
                 {{ response.errors.household?.city?.shift() }}
@@ -388,7 +314,7 @@
             <div class="sm:col-span-2">
               <label for="household-region" class="block text-sm font-medium leading-6 text-gray-900">State / Province</label>
               <div class="mt-2">
-                <select id="household-region" v-model="household.region" name="organization[households_attributes][][region]" autocomplete="address-level1" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
+                <select id="household-region" v-model="household.region" name="household[region]" autocomplete="address-level1" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
                   <option value="AL">Alabama</option>
                   <option value="AK">Alaska</option>
                   <option value="AR">Arkansas</option>
@@ -450,7 +376,7 @@
             <div class="sm:col-span-2">
               <label for="household-postal-code" class="block text-sm font-medium leading-6 text-gray-900">ZIP / Postal code</label>
               <div class="mt-2">
-                <input type="text" required v-model="household.postal_code" name="organization[households_attributes][][postal_code]" id="household-postal-code" autocomplete="postal-code" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                <input type="text" required v-model="household.postal_code" name="household[postal_code]" id="household-postal-code" autocomplete="postal-code" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
               </div>
               <div class="text-red-500 text-sm">
                 {{ response.errors.household?.postal_code?.shift() }}
